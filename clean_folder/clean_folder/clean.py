@@ -6,11 +6,12 @@ from pathlib import Path
 
 
 def processing_folder(path):
-    
+
     for directory in path.iterdir():
-        
+
         if directory.is_dir():
-            if  directory.name in extensions:
+
+            if directory.name in extensions:
                 continue
             try:
                 os.rmdir(directory)
@@ -19,7 +20,7 @@ def processing_folder(path):
                 processing_folder(directory)
                 continue
         files.append(directory)
-        
+
     return files
 
 
@@ -54,38 +55,37 @@ def root_dir():
     elif not Path(sys.argv[1]).exists():
         print("Does not exist")
         return sys.exit(1)
-    
+
     return Path(sys.argv[1])
 
 
 def normalize(name):
     maps = {
 
-        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 
-        'є': 'ie', 'ж': 'zh', 'з': 'z','и': 'y', 'і': 'i', 'ї': 'i', 'й': 'i',
-        'к': 'k', 'л': 'l','м': 'm', 'н': 'n', 'о': 'o', 'п': 'p','р': 'r', 
-        'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 
-        'ш': 'sh', 'щ': 'shch','ь': '', 'ю': 'iu', 'я': 'ia', 
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e',
+        'є': 'ie', 'ж': 'zh', 'з': 'z', 'и': 'y', 'і': 'i', 'ї': 'i', 'й': 'i',
+        'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r',
+        'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch',
+        'ш': 'sh', 'щ': 'shch', 'ь': '', 'ю': 'iu', 'я': 'ia',
 
         'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'H', 'Ґ': 'G', 'Д': 'D', 'Е': 'E',
-        'Є': 'Ye', 'Ж': 'Zh', 'З': 'Z', 'И': 'Y', 'І': 'I', 'Ї': 'Yi', 'Й': 'Y', 
-        'К': 'K', 'Л': 'L', 'М': 'M','Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 
-        'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts','Ч': 'Ch', 
+        'Є': 'Ye', 'Ж': 'Zh', 'З': 'Z', 'И': 'Y', 'І': 'I', 'Ї': 'Yi', 'Й': 'Y',
+        'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R',
+        'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts', 'Ч': 'Ch',
         'Ш': 'Sh', 'Щ': 'Shch', 'Ь': '', 'Ю': 'Yu', 'Я': 'Ya',
- 
+
     }
     names = name.split(".")
-    
-    if len(names)< 2:
+
+    if len(names) < 2:
         name_join = names[0]
     else:
         name_join = ".".join(names[:-1])
 
-
     translate_name = name_join.translate(name_join.maketrans(maps))
     re_name = re.sub(r'[^a-zA-Z0-9.]', '_', translate_name)
-    if len(names)>= 2:
-        normalize_name = ".".join([re_name,names[-1]])
+    if len(names) >= 2:
+        normalize_name = ".".join([re_name, names[-1]])
     else:
         normalize_name = re_name
     return normalize_name
@@ -95,7 +95,7 @@ def archives(file):
     famous.add(file.suffix)
     categor["archives"].append(file.name)
     remove_extension = os.path.splitext(file.name)[0]
-    shutil.unpack_archive(file.name, 'archives/'+ remove_extension)
+    shutil.unpack_archive(file.name, 'archives/' + remove_extension)
     os.remove(file)
 
 
@@ -103,32 +103,32 @@ def images(file):
     famous.add(file.suffix)
     norma = normalize(file.name)
     categor["images"].append(norma)
-    os.rename(file,norma)
-    shutil.move(norma,"images")
+    os.rename(file, norma)
+    shutil.move(norma, "images")
 
 
 def audio(file):
     famous.add(file.suffix)
     norma = normalize(file.name)
     categor["audio"].append(norma)
-    os.rename(file,norma)
-    shutil.move(norma,"audio")
+    os.rename(file, norma)
+    shutil.move(norma, "audio")
 
 
 def documents(file):
     famous.add(file.suffix)
     norma = normalize(file.name)
     categor["documents"].append(norma)
-    os.rename(file,norma)
-    shutil.move(norma,"documents")
-            
+    os.rename(file, norma)
+    shutil.move(norma, "documents")
+
 
 def video(file):
     famous.add(file.suffix)
     norma = normalize(file.name)
     categor["video"].append(norma)
-    os.rename(file,norma)
-    shutil.move(norma,"video")
+    os.rename(file, norma)
+    shutil.move(norma, "video")
 
 
 def main():
@@ -140,11 +140,11 @@ def main():
             os.mkdir(dir)
         except FileExistsError:
             continue
-    
+
     processing_folder(path)
     processing_file(files)
     processing_folder(path)
-    
+
     print(f"Файли з відомим розширенням:\n\
           images: {categor['images']}\n\
           video: {categor['video']}\n\
@@ -162,8 +162,7 @@ extensions = {
     "documents": ('.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx'),
     "audio": ('.vp3', '.ogg', '.wav', '.amr'),
     "archives": ('.zip', '.gz', '.tar'),
-    
-    
+
     }
 
 categor = {
@@ -174,7 +173,7 @@ categor = {
     "audio": [],
     "archives": [],
     "unknown": [],
-    
+
     }
 
 famous = set()
